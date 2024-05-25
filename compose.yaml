@@ -6,7 +6,7 @@ services:
     container_name: reverse_proxy_nginx
     depends_on:
       - nginx
-      - next
+#      - next
     restart: always
     ports:
       - "80:80"
@@ -14,24 +14,24 @@ services:
     volumes:
       - ./docker/reverse_proxy_nginx/config/:/etc/nginx/conf.d:ro
       - ./docker/nginx/ssl/:/etc/nginx/ssl/nginx:ro
-      - ./docker/next/ssl/:/etc/nginx/ssl/next:ro
+#      - ./docker/next/ssl/:/etc/nginx/ssl/next:ro
       - ./docker/mailhog/ssl/:/etc/nginx/ssl/mailhog:ro
     networks:
       - frontend
 
-  next:
-    build:
-      context: .
-      dockerfile: ./docker/next/Dockerfile
-    container_name: next
-    restart: always
-    volumes:
-      - ./next:/var/www/next
-    env_file:
-      - .env
-    command: "npm run dev -- -p 80"
-    networks:
-      - frontend
+#  next:
+#    build:
+#      context: .
+#      dockerfile: ./docker/next/Dockerfile
+#    container_name: next
+#    restart: always
+#    volumes:
+#      - ./next:/var/www/next
+#    env_file:
+#      - .env
+#    command: "npm run dev -- -p 80"
+#    networks:
+#      - frontend
 
   php:
     build:
@@ -47,6 +47,22 @@ services:
     networks:
       - backend
 
+  consumer:
+      build:
+        context: .
+        dockerfile: ./docker/php/Dockerfile
+      container_name: consumer
+      restart: always
+      working_dir: /var/www/symfony
+      volumes:
+        - ./symfony:/var/www/symfony
+      env_file:
+        - .env
+      networks:
+        - backend
+      entrypoint: "php bin/console messenger:consume async -vv"
+
+
   nginx:
     image: nginx:1.25.4-alpine3.18-slim
     depends_on:
@@ -57,6 +73,8 @@ services:
       - ./symfony:/var/www/symfony
       - ./docker/nginx/config/:/etc/nginx/conf.d:ro
       - ./docker/nginx/ssl/:/etc/nginx/ssl:ro
+    ports:
+      - "${PHP_DEBUG_PORT:-8080}:443"
     networks:
       - backend
       - frontend
