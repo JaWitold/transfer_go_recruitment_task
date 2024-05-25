@@ -1,0 +1,20 @@
+framework:
+    notifier:
+        message_bus: messenger.bus.default
+        chatter_transports:
+            main: '%env(DISCORD_DSN)% || %env(FAKE_CHAT_EMAIL_DSN)% || %env(FAKE_CHAT_LOGGER_DSN)%'
+#            discord: '%env(DISCORD_DSN)%'
+#            fakechat+email: '%env(FAKE_CHAT_EMAIL_DSN)%'
+#            fakechat+logger: '%env(FAKE_CHAT_LOGGER_DSN)%'
+        texter_transports:
+            main: '%env(FAKE_SMS_EMAIL_DSN)% || %env(FAKE_SMS_LOGGER_DSN)%'
+#            fakesms+email: '%env(FAKE_SMS_EMAIL_DSN)%'
+#            fakesms+logger: '%env(FAKE_SMS_LOGGER_DSN)%'
+        channel_policy:
+            # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
+            urgent: ['email']
+            high: ['email']
+            medium: ['email']
+            low: ['email']
+        admin_recipients:
+            - { email: admin@example.com }
