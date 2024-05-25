@@ -1,0 +1,15 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Notification API
+            version: 1.0.0
+            summary: The Notification Service API abstracts the process of sending notifications for various services within the company.
+            description: 'The Notification Service API is designed to abstract the process of sending notifications for various services within the company. It provides endpoint to send different types of notifications (e.g., email, SMS or/and chat notifications) to users. This service interacts with the FakeUserProvider service to retrieve user information necessary for delivering notifications.'
+        servers:
+            - url: 'https://localhost:8080'
+              description: localhost
+            - url: 'https://nginx.transfer.go'
+              description: local domain
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

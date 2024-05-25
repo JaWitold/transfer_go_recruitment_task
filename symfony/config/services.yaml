@@ -22,3 +22,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\EventListener\ValidationEventListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+
+    app.user_provider.fake:
+        class: App\Service\FakeUserProvider
+
+    App\Service\UserProviderInterface: '@app.user_provider.fake'

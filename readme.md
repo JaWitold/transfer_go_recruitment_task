@@ -13,6 +13,8 @@ This repository serves as a template for developing API and web services, utiliz
 
 Before running the application, environment variables must be set. Execute the following command in the root of the repository to copy `.env.example` files to `.env`:
 
+> **Important:** Remember to set up `DISCORD_DSN` env variable or to provide decryption key.
+
 ```bash
 find . -type f -name ".env.example" -exec sh -c 'cp "$0" "${0%.example}"' {} \;
 ```
@@ -24,7 +26,12 @@ With `.env` files prepared, start the application using Docker Compose:
 ```bash
 docker-compose up -d
 ```
-This will build and run the following services:
+
+> **Important:** Before accessing `localhost:8080` for the first time it is mandatory to install composer packages and  migrate MySQL migrations. It can be done by executing:
+> ```bash
+> docker compose exec -t php bash -c "composer install"
+> docker compose exec -t php bash -c "php bin/console doctrine:migrations:migrate -n"
+> ```
 
 ### SSL Certificates
 The `ssl/` directory contains scripts to generate SSL certificates for securing your local services. Follow the instructions in `ssl/readme.md` to generate and manage your SSL certificates.
@@ -35,18 +42,27 @@ To use the reverse proxy, you need to add domain mapping to your hosts file (on 
 #### For Windows:
 Add the following line to the hosts file located at `C:\Windows\System32\drivers\etc\hosts`
 ```bash
-127.0.0.1       nginx.template.com
-127.0.0.1       next.template.com
-127.0.0.1       mailhog.template.com
+127.0.0.1       nginx.transfer.go
+127.0.0.1       mailhog.transfer.go
 ```
 #### For Linux:
 Add the following line to the `/etc/hosts` file
 ```bash
-127.0.0.1       nginx.template.com
-127.0.0.1       next.template.com
-127.0.0.1       mailhog.template.com
+127.0.0.1       nginx.transfer.go
+127.0.0.1       mailhog.transfer.go
 ```
 > **Note:** The default SSL certificates can be reconfigured by modifying the `ssl/config/extfile.cnf` file according to your domain needs.
+
+## API Structure
+The solution serves the following API routes:
+
+### Notification:
+- POST http://localhost:8080/api/notification
+
+
+Detailed documentation of the routes is available at  http://localhost:8080/api/doc and http://localhost:8080/api/doc.json
+or https://nginx.transfer.go/api/doc and https://nginx.transfer.go/api/doc.json
+
 
 ## Running Tests
 
